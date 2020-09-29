@@ -125,8 +125,6 @@ class VoucherPoolTest {
         assertEquals(4, voucher_pool.getRedeemedVouchers().size());
         assertEquals(2, voucher_pool.getOpenVouchers().size());
         assertEquals(6, voucher_pool.getAllVouchers().size());
-
-        // TODO: Test further by newly redeeming some vouchers etc
     }
 
     @Test
@@ -148,6 +146,33 @@ class VoucherPoolTest {
         assertEquals(25050, allVouchers.get(4).getCentsValue());
         assertEquals(2475, allVouchers.get(5).getCentsValue());
 
-        // TODO: Test further by newly redeeming some vouchers etc
+        // this voucher should be created with identifier 0, hence inserted at the very beginning of the voucher list.
+        voucher_pool.createVoucher(777, member_list.getPlayer("113-88"));
+
+        assertEquals(7, allVouchers.size());
+
+        assertEquals(777, allVouchers.get(0).getCentsValue());
+        assertEquals(3230, allVouchers.get(1).getCentsValue());
+        assertEquals(25000, allVouchers.get(2).getCentsValue());
+        assertEquals(36000, allVouchers.get(3).getCentsValue());
+        assertEquals(100000, allVouchers.get(4).getCentsValue());
+        assertEquals(25050, allVouchers.get(5).getCentsValue());
+        assertEquals(2475, allVouchers.get(6).getCentsValue());
+    }
+
+    @Test
+    void getOpenVouchersSorted() {
+        String spieler_file_path = "data/spieler.csv";
+        String gutschein_eingeloest_file_path = "data/gutschein_eingeloest.csv";
+        String gutschein_ausgegeben_file_path = "data/gutschein_ausgegeben.csv";
+
+        MemberList  member_list = new MemberList(spieler_file_path);
+        VoucherPool voucher_pool = new VoucherPool(gutschein_ausgegeben_file_path, gutschein_eingeloest_file_path, member_list);
+
+        LinkedList<Voucher> openVouchers = voucher_pool.getOpenVouchers();
+        assertEquals(2, openVouchers.size());
+
+        assertEquals(3230, openVouchers.get(0).getCentsValue());
+        assertEquals(100000, openVouchers.get(1).getCentsValue());
     }
 }

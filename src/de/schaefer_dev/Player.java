@@ -11,6 +11,7 @@ public class Player {
 
     private final String identifier;
 
+    // Vouchers created by this Player. Alternatively one could also store a reference to the owner/player in the voucher class
     LinkedList<Voucher> vouchers;
 
     public Player(String player_identifier, String player_firstname, String player_lastname) {

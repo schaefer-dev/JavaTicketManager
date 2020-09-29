@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util. Collection;
 import java.util.LinkedList;
 
+/* Entity keeps track of all vouchers that have been created until this point in time */
 public class VoucherPool {
     private Integer nextFreeId;
 
@@ -28,7 +29,7 @@ public class VoucherPool {
 
 
     private void addVoucherSorted(Voucher new_voucher) {
-        // TODO: could be optimized using binary search because list is always sorted to improve complexity to O(log(n))
+        // This could be optimized using binary search because list is always sorted to improve complexity to O(log(n))
         Integer target_index = 0;
         for (Voucher voucher: vouchers) {
             if (voucher.getIdentifier().compareTo(new_voucher.getIdentifier()) > 0 ) {
@@ -107,10 +108,10 @@ public class VoucherPool {
                     Voucher voucher = getVoucher(values[0]);
                     voucher.redeem(values[3]);
                 } else {
-                    /* Parse CSV file with pending Vouchers */
+                    /* Parse CSV file with created Vouchers */
                     Player player = member_list.getPlayer(values[2]);
 
-                    // make sure number that do not contain '.' end with '.00'
+                    // make sure number that do not contain a period yet, get '.00' added at the back
                     String value_string = values[1];
                     if (!value_string.contains(".")) {
                         value_string += ".00";
@@ -134,7 +135,7 @@ public class VoucherPool {
         }
     }
 
-
+    /* returns Voucher with the given identifier */
     public Voucher getVoucher(String voucher_identifier) {
         // TODO: could be optimized using binary search because list is always sorted to improve complexity to O(log(n))
         for (Voucher voucher: vouchers) {
@@ -145,6 +146,7 @@ public class VoucherPool {
         return null;
     }
 
+    /* returns Linked list of all vouchers that have not yet been redeemed. */
     public LinkedList<Voucher> getOpenVouchers() {
         LinkedList<Voucher> openVochers = new LinkedList<Voucher>();
         for (Voucher voucher: vouchers) {
@@ -155,6 +157,7 @@ public class VoucherPool {
         return openVochers;
     }
 
+    /* returns Linked list of all vouchers that have already been redeemed. */
     public LinkedList<Voucher> getRedeemedVouchers() {
         LinkedList<Voucher> redeemedVouchers = new LinkedList<Voucher>();
         for (Voucher voucher: vouchers) {
@@ -167,7 +170,7 @@ public class VoucherPool {
 
     // prints details for all pending vouchers to console
     public void reportOpenVouchers() {
-        LinkedList<Voucher> openVouchers = getRedeemedVouchers();
+        LinkedList<Voucher> openVouchers = getOpenVouchers();
         if (openVouchers.size() > 0) {
             System.out.println("The following Vouchers are still open:");
             for (Voucher voucher : openVouchers) {
@@ -191,10 +194,12 @@ public class VoucherPool {
         }
     }
 
+    /* Returns all vouchers (order of increasing identifier) */
     public LinkedList<Voucher> getAllVouchers() {
         return vouchers;
     }
 
+    /* Returns the number of existing vouchers. */
     public Integer getSize() {
         return vouchers.size();
     }
