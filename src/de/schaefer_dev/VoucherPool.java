@@ -1,6 +1,6 @@
 package de.schaefer_dev;
 
-import java.io.File;
+import java.io.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -18,14 +18,24 @@ public class VoucherPool {
     private LinkedList<Voucher> pendingVouchers;
     private LinkedList<Voucher> redeemedVouchers;
 
-    /* Create new voucher with given value for the given player. Guarantees uniqueness of Voucher ID */
+    /* Create new voucher with the next available identifier. Voucher is assigned to the given player with the given value. */
     public Voucher createVoucher(Integer value, Player belongs_to) {
         if (belongs_to == null) {
             throw new IllegalArgumentException("given Player reference is null.");
         }
 
-        Voucher new_voucher = new Voucher(nextFreeId.toString(), value, belongs_to);
+        Voucher new_voucher = createVoucherWithIdentifier(nextFreeId.toString(), value, belongs_to);
         nextFreeId += 1;
+        return new_voucher;
+    }
+
+    /* Create new voucher with given value for the given player. */
+    private Voucher createVoucherWithIdentifier(String identifier, Integer value, Player belongs_to) {
+        if (belongs_to == null) {
+            throw new IllegalArgumentException("given Player reference is null.");
+        }
+
+        Voucher new_voucher = new Voucher(identifier, value, belongs_to);
 
         // add voucher to player it belongs to and in global voucher list
         pendingVouchers.add(new_voucher);
@@ -34,18 +44,66 @@ public class VoucherPool {
         return new_voucher;
     }
 
+    /* Create empty Voucher Pool in case we want to start from scratch */
     public VoucherPool() {
         nextFreeId = 0;
         pendingVouchers = new LinkedList<Voucher>();
         redeemedVouchers = new LinkedList<Voucher>();
     }
 
-    public VoucherPool(File pending_voucher_csv_file, File redeemed_voucher_csv_file) {
+    /* Create empty Voucher Pool from CSV files */
+    public VoucherPool(String pending_voucher_csv_file_path, String redeemed_voucher_csv_file_path, MemberList member_list) {
         nextFreeId = 0;
         pendingVouchers = new LinkedList<Voucher>();
         redeemedVouchers = new LinkedList<Voucher>();
 
+        parseVoucherFile(pending_voucher_csv_file_path, false, member_list);
+        parseVoucherFile(redeemed_voucher_csv_file_path, true, member_list);
+    }
+
+    private void parseVoucherFile(String voucher_csv_file, Boolean redeemed, MemberList member_list) {
         // TODO: parse files
+        BufferedReader buffered_reader = null;
+        String line = "";
+        String csv_split_by = ";";
+
+        try {
+
+            buffered_reader = new BufferedReader(new FileReader(voucher_csv_file));
+            // skip first line
+            buffered_reader.readLine();
+
+            while ((line = buffered_reader.readLine()) != null) {
+                String[] values = line.split(csv_split_by);
+                /* For some reason the order of attributes differs for redeemed and pending vouchers, hence both
+                    are handled seperatly. */
+                if (redeemed) {
+                    /* Parse CSV file with redeemed Vouchers */
+                    Player player = member_list.getPlayer(values[1]);
+                    Voucher new_voucher = createVoucherWithIdentifier(values[0], Integer.parseInt(values[2]), player);
+                    new_voucher.redeem();
+                    // TODO: date is missing and redeemed property is missing too
+                } else {
+                    /* Parse CSV file with pending Vouchers */
+                    Player player = member_list.getPlayer(values[2]);
+                    Voucher new_voucher = createVoucherWithIdentifier(values[0], Integer.parseInt(values[1].replace(".", "")), player);
+                    // TODO: date is missing
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (buffered_reader != null) {
+                try {
+                    buffered_reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     // go through list of pending vouchers and archive all vouchers that have been redeemed since the last
@@ -80,6 +138,32 @@ public class VoucherPool {
     public LinkedList<Voucher> getPendingVouchers() {
         archiveRedeemedVouchers();
         return pendingVouchers;
+    }
+
+    // prints details for all pending vouchers to console
+    public void reportPendingVouchers() {
+        archiveRedeemedVouchers();
+        if (pendingVouchers.size() > 0) {
+            System.out.println("The following Vouchers are still open:");
+            for (Voucher voucher : pendingVouchers) {
+                voucher.debug_print();
+            }
+        } else {
+            System.out.println("No Vouchers are currently open.");
+        }
+    }
+
+    // prints details for all redeemed vouchers to console
+    public void reportRedeemedVouchers() {
+        archiveRedeemedVouchers();
+        if (redeemedVouchers.size() > 0) {
+            System.out.println("The following Vouchers have been redeemed:");
+            for (Voucher voucher : redeemedVouchers) {
+                voucher.debug_print();
+            }
+        } else {
+            System.out.println("No Vouchers have been redeemed yet.");
+        }
     }
 
     public LinkedList<Voucher> getRedeemedVouchers() {

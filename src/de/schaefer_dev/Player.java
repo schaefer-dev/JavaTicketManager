@@ -38,5 +38,19 @@ public class Player {
         return vouchers;
     }
 
+    /* used to display the content of this player in a readable fashion to the console */
+    public void debug_print() {
+        System.out.print("Player " + firstname + " " + "  with Identifier " + identifier);
+        if (vouchers.size() > 0) {
+            System.out.println(" owns the following Vouchers:");
+            for (Voucher voucher: vouchers) {
+                System.out.print("  - ");
+                voucher.debug_print();
+            }
+        } else {
+            System.out.println(" does not own any Vouchers.");
+        }
+    }
+
 
 }

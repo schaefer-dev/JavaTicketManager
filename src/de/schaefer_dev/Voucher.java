@@ -3,6 +3,7 @@ package de.schaefer_dev;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+// (I decided against using a Voucher Interface/Parent with the implementations of redeemed and pending voucher on purpose!)
 public class Voucher {
     // Voucher Value tracked in ints to avoid imprecisions caused by usage of Float for currency
     private final Integer centsValue;
@@ -38,7 +39,7 @@ public class Voucher {
         System.out.print("Voucher with Identifier " + identifier);
         Integer euros = centsValue / 100;
         Integer cents = centsValue % 100;
-        System.out.print(" of value " + euros.toString() + "." + centsValue.toString());
+        System.out.print(" of value " + euros.toString() + "." + String.format("%02d", cents));
         System.out.print(" belonging to " + belongsTo.getFirstname() + " " + belongsTo.getLastname());
         System.out.print(" was created at " + sdf.format(createdDate));
         if (redeemed) {

@@ -1,7 +1,10 @@
 package de.schaefer_dev;
 
-import java.io.File;
 import java.util.LinkedList;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class MemberList {
 
@@ -14,22 +17,54 @@ public class MemberList {
         members = new LinkedList<Player>();
     }
 
-    /* Create Memberlist from existing files */
-    public MemberList(File members_csv_file) {
+    /* Create Memberlist from existing csv file */
+    public MemberList(String members_csv_file_path) {
         nextFreeId = 0;
         members = new LinkedList<Player>();
 
-        // TODO: parse file
+        BufferedReader buffered_reader = null;
+        String line = "";
+        String csv_split_by = ";";
+
+        try {
+
+            buffered_reader = new BufferedReader(new FileReader(members_csv_file_path));
+            // skip first line
+            buffered_reader.readLine();
+
+            while ((line = buffered_reader.readLine()) != null) {
+
+                String[] values = line.split(csv_split_by);
+                createPlayerWithID(values[0], values[1], values[2]);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (buffered_reader != null) {
+                try {
+                    buffered_reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /* Create new Player with the given name. Guarantees uniqueness of Player ID */
     public Player createPlayer(String firstname, String lastname) {
-        Player new_player = new Player(nextFreeId.toString(), firstname, lastname);
+        Player new_player = createPlayerWithID(nextFreeId.toString(), firstname, lastname);
         nextFreeId += 1;
+        return new_player;
+    }
 
+    /* Create new Player with the given name. Guarantees uniqueness of Player ID */
+    private Player createPlayerWithID(String identifier, String firstname, String lastname) {
+        Player new_player = new Player(identifier, firstname, lastname);
         // add player to global player list
         members.add(new_player);
-
         return new_player;
     }
 
@@ -40,5 +75,17 @@ public class MemberList {
             }
         }
         return null;
+    }
+
+    // prints details for all players that parttake
+    public void reportAllPlayers() {
+        if (members.size() > 0) {
+            System.out.println("The following players take part in this game:");
+            for (Player player : members) {
+                player.debug_print();
+            }
+        } else {
+            System.out.println("No players take part in this game.");
+        }
     }
 }
