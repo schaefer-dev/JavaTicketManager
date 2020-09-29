@@ -38,13 +38,25 @@ public class Voucher implements Comparable<Voucher> {
         redeemedDate = timestamp;
     }
 
-    /* attempts to redeem this Voucher, returns true if successful, false on failure */
+    /* attempts to redeem this Voucher, returns true if successful, false on failure.
+    * This function is overloaded. */
     public Boolean redeem() {
         if (redeemed) {
             return false;
         }
         redeemed = true;
         redeemedDate = sdf.format(new Timestamp(System.currentTimeMillis()));
+        return true;
+    }
+
+    /* attempts to redeem this Voucher, returns true if successful, false on failure
+    * This function is overloaded. */
+    public Boolean redeem(String timestamp) {
+        if (redeemed) {
+            return false;
+        }
+        redeemed = true;
+        redeemedDate = timestamp;
         return true;
     }
 

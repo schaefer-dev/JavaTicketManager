@@ -1,24 +1,46 @@
 package de.schaefer_dev;
 
 import java.io.*;
-import java.util.Iterator;
-import java.util.Collections;
+import java.util.Hashtable;
+import java.util. Collection;
 import java.util.LinkedList;
 
 public class VoucherPool {
     private Integer nextFreeId;
 
-    /* IMPORTANT REMARK:
-        To improve support for huge sets of Vouchers and simplify archiving, Vouchers are seperated into open Vouchers
-        and redeemed Vouchers at all times.
-        However, for efficiency reasons pendingVouchers may contain Vouchers which have already been redeemed (this is
-        an optimization!). Only on calls of getPendingVouchers and getRedeemedVouchers the split between both lists is
-        updated. This way the iterations over those lists is kept at a minimum.
-        Clearly these optimizations depend on what is used "most often". Depending on that information it may be useful
-        to always keep those list sorted by the ID of a voucher, or possibly even to use hashmaps.
-     */
-    private LinkedList<Voucher> openVouchers;
-    private LinkedList<Voucher> redeemedVouchers;
+    // this list is always sorted by identifier of voucher!
+    private LinkedList<Voucher> vouchers;
+
+    /* Create empty Voucher Pool in case we want to start from scratch */
+    public VoucherPool() {
+        nextFreeId = 0;
+        vouchers = new LinkedList<Voucher>();
+    }
+
+    /* Create empty Voucher Pool from CSV files */
+    public VoucherPool(String pending_voucher_csv_file_path, String redeemed_voucher_csv_file_path, MemberList member_list) {
+        nextFreeId = 0;
+        vouchers = new LinkedList<Voucher>();
+
+        parseVoucherFile(pending_voucher_csv_file_path, false, member_list);
+        parseVoucherFile(redeemed_voucher_csv_file_path, true, member_list);
+    }
+
+
+    private void addVoucherSorted(Voucher new_voucher) {
+        // TODO: could be optimized using binary search because list is always sorted to improve complexity to O(log(n))
+        Integer target_index = 0;
+        for (Voucher voucher: vouchers) {
+            if (voucher.getIdentifier().compareTo(new_voucher.getIdentifier()) > 0 ) {
+                vouchers.add(target_index, new_voucher);
+                return;
+            } else {
+                target_index += 1;
+            }
+        }
+        vouchers.add(new_voucher);
+    }
+
 
     /* Create new voucher with the next available identifier. Voucher is assigned to the given player with the given value.
     * This method is overloaded. */
@@ -42,7 +64,7 @@ public class VoucherPool {
         Voucher new_voucher = new Voucher(identifier, value, belongs_to);
 
         // add voucher to player it belongs to and in global voucher list
-        openVouchers.add(new_voucher);
+        addVoucherSorted(new_voucher);
         belongs_to.vouchers.add(new_voucher);
 
         return new_voucher;
@@ -58,31 +80,13 @@ public class VoucherPool {
         Voucher new_voucher = new Voucher(identifier, value, belongs_to, timestamp, redeemed);
 
         // add voucher to player it belongs to and in global voucher list
-        openVouchers.add(new_voucher);
+        addVoucherSorted(new_voucher);
         belongs_to.vouchers.add(new_voucher);
 
         return new_voucher;
     }
 
-    /* Create empty Voucher Pool in case we want to start from scratch */
-    public VoucherPool() {
-        nextFreeId = 0;
-        openVouchers = new LinkedList<Voucher>();
-        redeemedVouchers = new LinkedList<Voucher>();
-    }
-
-    /* Create empty Voucher Pool from CSV files */
-    public VoucherPool(String pending_voucher_csv_file_path, String redeemed_voucher_csv_file_path, MemberList member_list) {
-        nextFreeId = 0;
-        openVouchers = new LinkedList<Voucher>();
-        redeemedVouchers = new LinkedList<Voucher>();
-
-        parseVoucherFile(pending_voucher_csv_file_path, false, member_list);
-        parseVoucherFile(redeemed_voucher_csv_file_path, true, member_list);
-    }
-
     private void parseVoucherFile(String voucher_csv_file, Boolean redeemed, MemberList member_list) {
-        // TODO: parse files
         BufferedReader buffered_reader = null;
         String line = "";
         String csv_split_by = ";";
@@ -100,12 +104,18 @@ public class VoucherPool {
                 if (redeemed) {
                     /* Parse CSV file with redeemed Vouchers */
                     Player player = member_list.getPlayer(values[1]);
-                    Voucher new_voucher = createVoucher(values[0], Integer.parseInt(values[2]), player, true, values[3]);
-                    new_voucher.redeem();
+                    Voucher voucher = getVoucher(values[0]);
+                    voucher.redeem(values[3]);
                 } else {
                     /* Parse CSV file with pending Vouchers */
                     Player player = member_list.getPlayer(values[2]);
-                    Voucher new_voucher = createVoucher(values[0], Integer.parseInt(values[1].replace(".", "")), player, false, values[3]);
+
+                    // make sure number that do not contain '.' end with '.00'
+                    String value_string = values[1];
+                    if (!value_string.contains(".")) {
+                        value_string += ".00";
+                    }
+                    Voucher new_voucher = createVoucher(values[0], Integer.parseInt(value_string.replace(".", "")), player, false, values[3]);
                 }
             }
 
@@ -124,28 +134,10 @@ public class VoucherPool {
         }
     }
 
-    // go through list of pending vouchers and archive all vouchers that have been redeemed since the last
-    // call of this method.
-    private void archiveRedeemedVouchers() {
-        Iterator<Voucher> iter = openVouchers.iterator();
-        while(iter.hasNext()) {
-            Voucher voucher = iter.next ();
-            // if voucher was redeemed move it to redeemed voucher list
-            if(voucher.getRedeemed()){
-                redeemedVouchers.add(voucher);
-                iter.remove();
-            }
-        }
-    }
-
 
     public Voucher getVoucher(String voucher_identifier) {
-        for (Voucher voucher: openVouchers) {
-            if (voucher.getIdentifier().equals(voucher_identifier)) {
-                return voucher;
-            }
-        }
-        for (Voucher voucher: redeemedVouchers) {
+        // TODO: could be optimized using binary search because list is always sorted to improve complexity to O(log(n))
+        for (Voucher voucher: vouchers) {
             if (voucher.getIdentifier().equals(voucher_identifier)) {
                 return voucher;
             }
@@ -154,18 +146,28 @@ public class VoucherPool {
     }
 
     public LinkedList<Voucher> getOpenVouchers() {
-        archiveRedeemedVouchers();
-        return openVouchers;
+        LinkedList<Voucher> openVochers = new LinkedList<Voucher>();
+        for (Voucher voucher: vouchers) {
+            if (! voucher.getRedeemed()) {
+                openVochers.add(voucher);
+            }
+        }
+        return openVochers;
     }
 
     public LinkedList<Voucher> getRedeemedVouchers() {
-        archiveRedeemedVouchers();
+        LinkedList<Voucher> redeemedVouchers = new LinkedList<Voucher>();
+        for (Voucher voucher: vouchers) {
+            if (voucher.getRedeemed()) {
+                redeemedVouchers.add(voucher);
+            }
+        }
         return redeemedVouchers;
     }
 
     // prints details for all pending vouchers to console
     public void reportOpenVouchers() {
-        archiveRedeemedVouchers();
+        LinkedList<Voucher> openVouchers = getRedeemedVouchers();
         if (openVouchers.size() > 0) {
             System.out.println("The following Vouchers are still open:");
             for (Voucher voucher : openVouchers) {
@@ -178,7 +180,7 @@ public class VoucherPool {
 
     // prints details for all redeemed vouchers to console
     public void reportRedeemedVouchers() {
-        archiveRedeemedVouchers();
+        LinkedList<Voucher> redeemedVouchers = getRedeemedVouchers();
         if (redeemedVouchers.size() > 0) {
             System.out.println("The following Vouchers have been redeemed:");
             for (Voucher voucher : redeemedVouchers) {
@@ -189,20 +191,11 @@ public class VoucherPool {
         }
     }
 
-    /* Merges the list of open vouchers and pending vouchers and sorts the returned list by voucher identifier
-    *   If this is a function that is used very often, the current design is not ideal due to the requirement of
-    *   re-sorting. */
     public LinkedList<Voucher> getAllVouchers() {
-        Integer i = 0;
-        Integer j = 0;
-        LinkedList<Voucher> all_vouchers_list = getOpenVouchers();
-        all_vouchers_list.addAll(getRedeemedVouchers());
-
-        Collections.sort(all_vouchers_list);
-        return all_vouchers_list;
+        return vouchers;
     }
 
     public Integer getSize() {
-        return redeemedVouchers.size() + openVouchers.size();
+        return vouchers.size();
     }
 }

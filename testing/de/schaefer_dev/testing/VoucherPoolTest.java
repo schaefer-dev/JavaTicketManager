@@ -130,7 +130,7 @@ class VoucherPoolTest {
     }
 
     @Test
-    void getAllVouchers() {
+    void getAllVouchersSorted() {
         String spieler_file_path = "data/spieler.csv";
         String gutschein_eingeloest_file_path = "data/gutschein_eingeloest.csv";
         String gutschein_ausgegeben_file_path = "data/gutschein_ausgegeben.csv";
@@ -138,7 +138,15 @@ class VoucherPoolTest {
         MemberList  member_list = new MemberList(spieler_file_path);
         VoucherPool voucher_pool = new VoucherPool(gutschein_ausgegeben_file_path, gutschein_eingeloest_file_path, member_list);
 
-        assertEquals(6, voucher_pool.getAllVouchers().size());
+        LinkedList<Voucher> allVouchers = voucher_pool.getAllVouchers();
+        assertEquals(6, allVouchers.size());
+
+        assertEquals(3230, allVouchers.get(0).getCentsValue());
+        assertEquals(25000, allVouchers.get(1).getCentsValue());
+        assertEquals(36000, allVouchers.get(2).getCentsValue());
+        assertEquals(100000, allVouchers.get(3).getCentsValue());
+        assertEquals(25050, allVouchers.get(4).getCentsValue());
+        assertEquals(2475, allVouchers.get(5).getCentsValue());
 
         // TODO: Test further by newly redeeming some vouchers etc
     }
