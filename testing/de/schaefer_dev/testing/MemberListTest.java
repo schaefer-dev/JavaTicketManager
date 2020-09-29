@@ -25,4 +25,16 @@ class MemberListTest {
         assertEquals("1", test_player_2.getIdentifier());
 
     }
+
+    @Test
+    void getPlayer() {
+        MemberList memberList = new MemberList();
+        Player test_player_0 = memberList.createPlayer("Max", "Mustermann");
+        Player test_player_1 = memberList.createPlayer("Bernd", "Beispiel");
+        Player test_player_2 = memberList.createPlayer("Bobby", "Carlsen");
+
+        assertEquals("Bobby", memberList.getPlayer("2").getFirstname());
+        assertEquals("Mustermann", memberList.getPlayer("0").getLastname());
+        assertNull(memberList.getPlayer("anonymous"));
+    }
 }

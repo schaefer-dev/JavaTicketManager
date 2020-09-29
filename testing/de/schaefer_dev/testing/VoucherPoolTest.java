@@ -91,4 +91,25 @@ class VoucherPoolTest {
         redeemedVouchers = vouchers.getRedeemedVouchers();
         assertEquals(4, redeemedVouchers.size());
     }
+
+    @Test
+    void getVoucher() {
+        VoucherPool vouchers = new VoucherPool();
+        MemberList memberList = new MemberList();
+        Player test_player_0 = memberList.createPlayer("Max", "Mustermann");
+        Player test_player_1 = memberList.createPlayer("Max", "Mustermann");
+        Voucher test_voucher_0 = vouchers.createVoucher(232,  test_player_0);
+        Voucher test_voucher_1 = vouchers.createVoucher(999,  test_player_1);
+        Voucher test_voucher_2 = vouchers.createVoucher(321,  test_player_0);
+        Voucher test_voucher_3 = vouchers.createVoucher(444,  test_player_1);
+
+
+        test_voucher_1.redeem();
+        test_voucher_3.redeem();
+        assertEquals(232, vouchers.getVoucher("0").getCentsValue());
+        assertEquals(999, vouchers.getVoucher("1").getCentsValue());
+        assertEquals(321, vouchers.getVoucher("2").getCentsValue());
+        assertEquals(444, vouchers.getVoucher("3").getCentsValue());
+
+    }
 }

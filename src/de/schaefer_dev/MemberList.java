@@ -32,4 +32,13 @@ public class MemberList {
 
         return new_player;
     }
+
+    public Player getPlayer(String player_identifier) {
+        for (Player player: members) {
+            if (player.getIdentifier().equals(player_identifier)) {
+                return player;
+            }
+        }
+        return null;
+    }
 }

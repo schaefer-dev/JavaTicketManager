@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class Voucher {
+    // Voucher Value tracked in ints to avoid imprecisions caused by usage of Float for currency
     private final Integer centsValue;
     private final String identifier;
     private final Player belongsTo;

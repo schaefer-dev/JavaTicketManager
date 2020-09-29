@@ -62,6 +62,21 @@ public class VoucherPool {
         }
     }
 
+
+    public Voucher getVoucher(String voucher_identifier) {
+        for (Voucher voucher: pendingVouchers) {
+            if (voucher.getIdentifier().equals(voucher_identifier)) {
+                return voucher;
+            }
+        }
+        for (Voucher voucher: redeemedVouchers) {
+            if (voucher.getIdentifier().equals(voucher_identifier)) {
+                return voucher;
+            }
+        }
+        return null;
+    }
+
     public LinkedList<Voucher> getPendingVouchers() {
         archiveRedeemedVouchers();
         return pendingVouchers;
