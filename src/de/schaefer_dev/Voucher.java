@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 // (I decided against using a Voucher Interface/Parent with the implementations of redeemed and pending voucher on purpose!)
-public class Voucher {
+public class Voucher implements Comparable<Voucher> {
     // Voucher Value tracked in ints to avoid imprecisions caused by usage of Float for currency
     private final Integer centsValue;
     private final String identifier;
@@ -85,5 +85,10 @@ public class Voucher {
 
     public String getCreatedDate() {
         return createdDate;
+    }
+
+    @Override
+    public int compareTo(Voucher other) {
+        return Double.compare(Double.parseDouble(this.identifier), Double.parseDouble(other.identifier));
     }
 }

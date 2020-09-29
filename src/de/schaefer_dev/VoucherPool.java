@@ -2,18 +2,20 @@ package de.schaefer_dev;
 
 import java.io.*;
 import java.util.Iterator;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class VoucherPool {
     private Integer nextFreeId;
 
     /* IMPORTANT REMARK:
-        for efficiency reasons pendingVouchers may contain Vouchers which have already been redeemed. Only on calls
-        of getPendingVouchers and getRedeemedVouchers the split between both lists is updated. This way the iterations
-        over those lists is kept at a minimum.
-
-        Both lists will always remain sorted according to the voucher-id. This is the case because new vouchers are
-        always added at the end and because the update function also maintains the sorted property for both lists.
+        To improve support for huge sets of Vouchers and simplify archiving, Vouchers are seperated into open Vouchers
+        and redeemed Vouchers at all times.
+        However, for efficiency reasons pendingVouchers may contain Vouchers which have already been redeemed (this is
+        an optimization!). Only on calls of getPendingVouchers and getRedeemedVouchers the split between both lists is
+        updated. This way the iterations over those lists is kept at a minimum.
+        Clearly these optimizations depend on what is used "most often". Depending on that information it may be useful
+        to always keep those list sorted by the ID of a voucher, or possibly even to use hashmaps.
      */
     private LinkedList<Voucher> openVouchers;
     private LinkedList<Voucher> redeemedVouchers;
@@ -187,15 +189,17 @@ public class VoucherPool {
         }
     }
 
-    /* Intelligently merges the list of open vouchers and pending vouchers such that it is sorted by their identifier */
+    /* Merges the list of open vouchers and pending vouchers and sorts the returned list by voucher identifier
+    *   If this is a function that is used very often, the current design is not ideal due to the requirement of
+    *   re-sorting. */
     public LinkedList<Voucher> getAllVouchers() {
         Integer i = 0;
         Integer j = 0;
-        LinkedList<Voucher> all_vouchers_list;
+        LinkedList<Voucher> all_vouchers_list = getOpenVouchers();
+        all_vouchers_list.addAll(getRedeemedVouchers());
 
-        // TODO
-        return null;
-
+        Collections.sort(all_vouchers_list);
+        return all_vouchers_list;
     }
 
     public Integer getSize() {

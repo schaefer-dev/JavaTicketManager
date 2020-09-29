@@ -128,4 +128,18 @@ class VoucherPoolTest {
 
         // TODO: Test further by newly redeeming some vouchers etc
     }
+
+    @Test
+    void getAllVouchers() {
+        String spieler_file_path = "data/spieler.csv";
+        String gutschein_eingeloest_file_path = "data/gutschein_eingeloest.csv";
+        String gutschein_ausgegeben_file_path = "data/gutschein_ausgegeben.csv";
+
+        MemberList  member_list = new MemberList(spieler_file_path);
+        VoucherPool voucher_pool = new VoucherPool(gutschein_ausgegeben_file_path, gutschein_eingeloest_file_path, member_list);
+
+        assertEquals(6, voucher_pool.getAllVouchers().size());
+
+        // TODO: Test further by newly redeeming some vouchers etc
+    }
 }
