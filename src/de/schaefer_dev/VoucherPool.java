@@ -1,8 +1,9 @@
 package de.schaefer_dev;
 
-import java.io.*;
-import java.util.Hashtable;
-import java.util. Collection;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 
 /* Entity keeps track of all vouchers that have been created until this point in time */
@@ -10,7 +11,7 @@ public class VoucherPool {
     private Integer nextFreeId;
 
     // this list is always sorted by identifier of voucher!
-    private LinkedList<Voucher> vouchers;
+    private final LinkedList<Voucher> vouchers;
 
     /* Create empty Voucher Pool in case we want to start from scratch */
     public VoucherPool() {
@@ -31,8 +32,8 @@ public class VoucherPool {
     private void addVoucherSorted(Voucher new_voucher) {
         // This could be optimized using binary search because list is always sorted to improve complexity to O(log(n))
         Integer target_index = 0;
-        for (Voucher voucher: vouchers) {
-            if (voucher.getIdentifier().compareTo(new_voucher.getIdentifier()) > 0 ) {
+        for (Voucher voucher : vouchers) {
+            if (voucher.getIdentifier().compareTo(new_voucher.getIdentifier()) > 0) {
                 vouchers.add(target_index, new_voucher);
                 return;
             } else {
@@ -44,7 +45,7 @@ public class VoucherPool {
 
 
     /* Create new voucher with the next available identifier. Voucher is assigned to the given player with the given value.
-    * This method is overloaded. */
+     * This method is overloaded. */
     public Voucher createVoucher(Integer value, Player belongs_to) {
         if (belongs_to == null) {
             throw new IllegalArgumentException("given Player reference is null.");
@@ -56,7 +57,7 @@ public class VoucherPool {
     }
 
     /* Create new voucher with given value for the given player.
-    * This method is overloaded. */
+     * This method is overloaded. */
     private Voucher createVoucher(String identifier, Integer value, Player belongs_to) {
         if (belongs_to == null) {
             throw new IllegalArgumentException("given Player reference is null.");
@@ -72,7 +73,7 @@ public class VoucherPool {
     }
 
     /* Create new fully custom voucher with given value and timestamp for the given player.
-    * This method is overloaded. */
+     * This method is overloaded. */
     private Voucher createVoucher(String identifier, Integer value, Player belongs_to, Boolean redeemed, String timestamp) {
         if (belongs_to == null) {
             throw new IllegalArgumentException("given Player reference is null.");
@@ -138,7 +139,7 @@ public class VoucherPool {
     /* returns Voucher with the given identifier */
     public Voucher getVoucher(String voucher_identifier) {
         // TODO: could be optimized using binary search because list is always sorted to improve complexity to O(log(n))
-        for (Voucher voucher: vouchers) {
+        for (Voucher voucher : vouchers) {
             if (voucher.getIdentifier().equals(voucher_identifier)) {
                 return voucher;
             }
@@ -149,8 +150,8 @@ public class VoucherPool {
     /* returns Linked list of all vouchers that have not yet been redeemed. */
     public LinkedList<Voucher> getOpenVouchers() {
         LinkedList<Voucher> openVochers = new LinkedList<Voucher>();
-        for (Voucher voucher: vouchers) {
-            if (! voucher.getRedeemed()) {
+        for (Voucher voucher : vouchers) {
+            if (!voucher.getRedeemed()) {
                 openVochers.add(voucher);
             }
         }
@@ -160,7 +161,7 @@ public class VoucherPool {
     /* returns Linked list of all vouchers that have already been redeemed. */
     public LinkedList<Voucher> getRedeemedVouchers() {
         LinkedList<Voucher> redeemedVouchers = new LinkedList<Voucher>();
-        for (Voucher voucher: vouchers) {
+        for (Voucher voucher : vouchers) {
             if (voucher.getRedeemed()) {
                 redeemedVouchers.add(voucher);
             }

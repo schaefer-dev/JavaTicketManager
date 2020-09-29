@@ -11,7 +11,7 @@ public class Main {
         String gutschein_eingeloest_file_path = "data/gutschein_eingeloest.csv";
         String gutschein_ausgegeben_file_path = "data/gutschein_ausgegeben.csv";
 
-        MemberList  member_list = new MemberList(spieler_file_path);
+        MemberList member_list = new MemberList(spieler_file_path);
         VoucherPool voucher_pool = new VoucherPool(gutschein_ausgegeben_file_path, gutschein_eingeloest_file_path, member_list);
 
 

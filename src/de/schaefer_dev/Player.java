@@ -1,13 +1,12 @@
 package de.schaefer_dev;
 
-import java.sql.Timestamp;
 import java.util.LinkedList;
 
 // Player class describes the entity that possesses vouchers
 public class Player {
 
-    private String firstname;
-    private String lastname;
+    private final String firstname;
+    private final String lastname;
 
     private final String identifier;
 
@@ -44,7 +43,7 @@ public class Player {
         System.out.print("Player " + firstname + " " + lastname + "  with Identifier " + identifier);
         if (vouchers.size() > 0) {
             System.out.println(" owns the following Vouchers:");
-            for (Voucher voucher: vouchers) {
+            for (Voucher voucher : vouchers) {
                 System.out.print("  - ");
                 voucher.debug_print();
             }

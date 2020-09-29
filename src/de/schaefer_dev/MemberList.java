@@ -1,25 +1,29 @@
 package de.schaefer_dev;
 
-import java.util.LinkedList;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
 
+/* Structure that maintains the list of Users that may create/own vouchers */
 public class MemberList {
 
+    // next free identifier which may be used for a newly created user
     private Integer nextFreeId;
-    private LinkedList<Player> members;
+
+    // Linked list that contains all users.
+    private final LinkedList<Player> members;
 
     /* Create empty Memberlist.
-    * This constructor is overloaded. */
+     * This constructor is overloaded. */
     public MemberList() {
         nextFreeId = 0;
         members = new LinkedList<Player>();
     }
 
     /* Create Memberlist from existing csv file.
-    * This constructor is overloaded. */
+     * This constructor is overloaded. */
     public MemberList(String members_csv_file_path) {
         nextFreeId = 0;
         members = new LinkedList<Player>();
@@ -34,6 +38,7 @@ public class MemberList {
             // skip first line
             buffered_reader.readLine();
 
+            // read until last line is reached
             while ((line = buffered_reader.readLine()) != null) {
 
                 String[] values = line.split(csv_split_by);
@@ -71,7 +76,7 @@ public class MemberList {
     }
 
     public Player getPlayer(String player_identifier) {
-        for (Player player: members) {
+        for (Player player : members) {
             if (player.getIdentifier().equals(player_identifier)) {
                 return player;
             }
@@ -83,7 +88,7 @@ public class MemberList {
         return members.size();
     }
 
-    // prints details for all players that parttake
+    // prints details for all players that participate
     public void reportAllPlayers() {
         if (members.size() > 0) {
             System.out.println("The following players take part in this game:");

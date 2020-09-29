@@ -2,11 +2,10 @@ package de.schaefer_dev.testing;
 
 import de.schaefer_dev.MemberList;
 import de.schaefer_dev.Player;
-import de.schaefer_dev.Voucher;
-import de.schaefer_dev.VoucherPool;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class MemberListTest {
 

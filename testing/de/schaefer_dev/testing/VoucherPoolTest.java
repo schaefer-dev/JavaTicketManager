@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class VoucherPoolTest {
 
@@ -17,8 +17,8 @@ class VoucherPoolTest {
         VoucherPool vouchers = new VoucherPool();
         MemberList memberList = new MemberList();
         Player test_player = memberList.createPlayer("Max", "Mustermann");
-        Voucher test_voucher_1 = vouchers.createVoucher(232,  test_player);
-        Voucher test_voucher_2 = vouchers.createVoucher(999,  test_player);
+        Voucher test_voucher_1 = vouchers.createVoucher(232, test_player);
+        Voucher test_voucher_2 = vouchers.createVoucher(999, test_player);
 
         assertEquals(232, test_voucher_1.getCentsValue());
         assertEquals("0", test_voucher_1.getIdentifier());
@@ -33,10 +33,10 @@ class VoucherPoolTest {
         MemberList memberList = new MemberList();
         Player test_player_0 = memberList.createPlayer("Max", "Mustermann");
         Player test_player_1 = memberList.createPlayer("Max", "Mustermann");
-        Voucher test_voucher_0 = vouchers.createVoucher(232,  test_player_0);
-        Voucher test_voucher_1 = vouchers.createVoucher(999,  test_player_1);
-        Voucher test_voucher_2 = vouchers.createVoucher(321,  test_player_0);
-        Voucher test_voucher_3 = vouchers.createVoucher(444,  test_player_1);
+        Voucher test_voucher_0 = vouchers.createVoucher(232, test_player_0);
+        Voucher test_voucher_1 = vouchers.createVoucher(999, test_player_1);
+        Voucher test_voucher_2 = vouchers.createVoucher(321, test_player_0);
+        Voucher test_voucher_3 = vouchers.createVoucher(444, test_player_1);
 
         LinkedList<Voucher> pendingVouchers = vouchers.getOpenVouchers();
         assertEquals(4, pendingVouchers.size());
@@ -66,10 +66,10 @@ class VoucherPoolTest {
         MemberList memberList = new MemberList();
         Player test_player_0 = memberList.createPlayer("Max", "Mustermann");
         Player test_player_1 = memberList.createPlayer("Max", "Mustermann");
-        Voucher test_voucher_0 = vouchers.createVoucher(232,  test_player_0);
-        Voucher test_voucher_1 = vouchers.createVoucher(999,  test_player_1);
-        Voucher test_voucher_2 = vouchers.createVoucher(321,  test_player_0);
-        Voucher test_voucher_3 = vouchers.createVoucher(444,  test_player_1);
+        Voucher test_voucher_0 = vouchers.createVoucher(232, test_player_0);
+        Voucher test_voucher_1 = vouchers.createVoucher(999, test_player_1);
+        Voucher test_voucher_2 = vouchers.createVoucher(321, test_player_0);
+        Voucher test_voucher_3 = vouchers.createVoucher(444, test_player_1);
 
         LinkedList<Voucher> redeemedVouchers = vouchers.getRedeemedVouchers();
         assertEquals(0, redeemedVouchers.size());
@@ -98,10 +98,10 @@ class VoucherPoolTest {
         MemberList memberList = new MemberList();
         Player test_player_0 = memberList.createPlayer("Max", "Mustermann");
         Player test_player_1 = memberList.createPlayer("Max", "Mustermann");
-        Voucher test_voucher_0 = vouchers.createVoucher(232,  test_player_0);
-        Voucher test_voucher_1 = vouchers.createVoucher(999,  test_player_1);
-        Voucher test_voucher_2 = vouchers.createVoucher(321,  test_player_0);
-        Voucher test_voucher_3 = vouchers.createVoucher(444,  test_player_1);
+        Voucher test_voucher_0 = vouchers.createVoucher(232, test_player_0);
+        Voucher test_voucher_1 = vouchers.createVoucher(999, test_player_1);
+        Voucher test_voucher_2 = vouchers.createVoucher(321, test_player_0);
+        Voucher test_voucher_3 = vouchers.createVoucher(444, test_player_1);
 
 
         test_voucher_1.redeem();
@@ -119,7 +119,7 @@ class VoucherPoolTest {
         String gutschein_eingeloest_file_path = "data/gutschein_eingeloest.csv";
         String gutschein_ausgegeben_file_path = "data/gutschein_ausgegeben.csv";
 
-        MemberList  member_list = new MemberList(spieler_file_path);
+        MemberList member_list = new MemberList(spieler_file_path);
         VoucherPool voucher_pool = new VoucherPool(gutschein_ausgegeben_file_path, gutschein_eingeloest_file_path, member_list);
 
         assertEquals(4, voucher_pool.getRedeemedVouchers().size());
@@ -133,7 +133,7 @@ class VoucherPoolTest {
         String gutschein_eingeloest_file_path = "data/gutschein_eingeloest.csv";
         String gutschein_ausgegeben_file_path = "data/gutschein_ausgegeben.csv";
 
-        MemberList  member_list = new MemberList(spieler_file_path);
+        MemberList member_list = new MemberList(spieler_file_path);
         VoucherPool voucher_pool = new VoucherPool(gutschein_ausgegeben_file_path, gutschein_eingeloest_file_path, member_list);
 
         LinkedList<Voucher> allVouchers = voucher_pool.getAllVouchers();
@@ -166,7 +166,7 @@ class VoucherPoolTest {
         String gutschein_eingeloest_file_path = "data/gutschein_eingeloest.csv";
         String gutschein_ausgegeben_file_path = "data/gutschein_ausgegeben.csv";
 
-        MemberList  member_list = new MemberList(spieler_file_path);
+        MemberList member_list = new MemberList(spieler_file_path);
         VoucherPool voucher_pool = new VoucherPool(gutschein_ausgegeben_file_path, gutschein_eingeloest_file_path, member_list);
 
         LinkedList<Voucher> openVouchers = voucher_pool.getOpenVouchers();

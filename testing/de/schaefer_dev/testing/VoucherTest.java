@@ -14,7 +14,7 @@ class VoucherTest {
         VoucherPool vouchers = new VoucherPool();
         MemberList memberList = new MemberList();
         Player test_player = memberList.createPlayer("Max", "Mustermann");
-        Voucher test_voucher = vouchers.createVoucher(232,  test_player);
+        Voucher test_voucher = vouchers.createVoucher(232, test_player);
 
         assertFalse(test_voucher.getRedeemed());
         assertNull(test_voucher.getRedeemedDate());

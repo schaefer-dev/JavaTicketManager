@@ -17,7 +17,7 @@ public class Voucher implements Comparable<Voucher> {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
     /* Creates new voucher that has not been redeemed yet with the timestep of the current point in time
-    * This constructor is overloaded. */
+     * This constructor is overloaded. */
     public Voucher(String voucher_identifier, Integer voucher_cents_value, Player voucher_belongs_to) {
         identifier = voucher_identifier;
         centsValue = voucher_cents_value;
@@ -28,7 +28,7 @@ public class Voucher implements Comparable<Voucher> {
     }
 
     /* Creates new voucher of custom information.
-    * This constructor is overloaded. */
+     * This constructor is overloaded. */
     public Voucher(String voucher_identifier, Integer voucher_cents_value, Player voucher_belongs_to, String timestamp, Boolean already_redeemed) {
         identifier = voucher_identifier;
         centsValue = voucher_cents_value;
@@ -39,7 +39,7 @@ public class Voucher implements Comparable<Voucher> {
     }
 
     /* attempts to redeem this Voucher, returns true if successful, false on failure.
-    * This function is overloaded. */
+     * This function is overloaded. */
     public Boolean redeem() {
         if (redeemed) {
             return false;
@@ -50,7 +50,7 @@ public class Voucher implements Comparable<Voucher> {
     }
 
     /* attempts to redeem this Voucher, returns true if successful, false on failure
-    * This function is overloaded. */
+     * This function is overloaded. */
     public Boolean redeem(String timestamp) {
         if (redeemed) {
             return false;
@@ -62,7 +62,7 @@ public class Voucher implements Comparable<Voucher> {
 
     /* used to display the content of this voucher in a readable fashion to the console */
     public void debug_print() {
-        System.out.print("Voucher with Identifier " + identifier.toString());
+        System.out.print("Voucher with Identifier " + identifier);
         Integer euros = centsValue / 100;
         Integer cents = centsValue % 100;
         System.out.print(" of value " + euros.toString() + "." + String.format("%02d", cents));
