@@ -1,7 +1,5 @@
 package de.schaefer_dev;
 
-import java.io.File;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -16,19 +14,19 @@ public class Main {
         Voucher test_voucher_2 = vouchers.createVoucher(999,  test_player_0);
         Voucher test_voucher_3 = vouchers.createVoucher(403,  test_player_1);
 
-        vouchers.reportPendingVouchers();
+        vouchers.reportOpenVouchers();
         vouchers.reportRedeemedVouchers();
 
         System.out.println("---- redeeming Voucher 0");
 
         test_voucher_0.redeem();
-        vouchers.reportPendingVouchers();
+        vouchers.reportOpenVouchers();
         vouchers.reportRedeemedVouchers();
 
         System.out.println("---- redeeming Voucher 1");
 
         test_voucher_1.redeem();
-        vouchers.reportPendingVouchers();
+        vouchers.reportOpenVouchers();
         vouchers.reportRedeemedVouchers();
 
         memberList.reportAllPlayers();

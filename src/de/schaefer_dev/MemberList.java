@@ -79,6 +79,10 @@ public class MemberList {
         return null;
     }
 
+    public Integer getSize() {
+        return members.size();
+    }
+
     // prints details for all players that parttake
     public void reportAllPlayers() {
         if (members.size() > 0) {

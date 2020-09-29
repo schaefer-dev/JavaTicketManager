@@ -50,7 +50,7 @@ public class Voucher {
 
     /* used to display the content of this voucher in a readable fashion to the console */
     public void debug_print() {
-        System.out.print("Voucher with Identifier " + identifier);
+        System.out.print("Voucher with Identifier " + identifier.toString());
         Integer euros = centsValue / 100;
         Integer cents = centsValue % 100;
         System.out.print(" of value " + euros.toString() + "." + String.format("%02d", cents));

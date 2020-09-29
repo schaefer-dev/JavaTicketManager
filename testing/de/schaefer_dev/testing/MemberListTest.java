@@ -37,4 +37,13 @@ class MemberListTest {
         assertEquals("Mustermann", memberList.getPlayer("0").getLastname());
         assertNull(memberList.getPlayer("anonymous"));
     }
+
+    @Test
+    void csvLoading() {
+        MemberList memberList = new MemberList("data/spieler.csv");
+
+        assertEquals(6, memberList.getSize());
+        assertEquals("Ferdinand", memberList.getPlayer("114-501").getLastname());
+        assertEquals("Walter", memberList.getPlayer("117-123").getFirstname());
+    }
 }

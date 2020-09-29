@@ -38,25 +38,25 @@ class VoucherPoolTest {
         Voucher test_voucher_2 = vouchers.createVoucher(321,  test_player_0);
         Voucher test_voucher_3 = vouchers.createVoucher(444,  test_player_1);
 
-        LinkedList<Voucher> pendingVouchers = vouchers.getPendingVouchers();
+        LinkedList<Voucher> pendingVouchers = vouchers.getOpenVouchers();
         assertEquals(4, pendingVouchers.size());
 
         test_voucher_3.redeem();
-        pendingVouchers = vouchers.getPendingVouchers();
+        pendingVouchers = vouchers.getOpenVouchers();
         assertEquals(3, pendingVouchers.size());
 
         test_voucher_1.redeem();
-        pendingVouchers = vouchers.getPendingVouchers();
+        pendingVouchers = vouchers.getOpenVouchers();
         assertEquals(2, pendingVouchers.size());
 
         test_voucher_0.redeem();
-        pendingVouchers = vouchers.getPendingVouchers();
+        pendingVouchers = vouchers.getOpenVouchers();
         assertEquals(1, pendingVouchers.size());
 
         // check that only voucher 2 remains
         assertEquals("2", pendingVouchers.getFirst().getIdentifier());
         test_voucher_2.redeem();
-        pendingVouchers = vouchers.getPendingVouchers();
+        pendingVouchers = vouchers.getOpenVouchers();
         assertEquals(0, pendingVouchers.size());
     }
 
@@ -111,5 +111,21 @@ class VoucherPoolTest {
         assertEquals(321, vouchers.getVoucher("2").getCentsValue());
         assertEquals(444, vouchers.getVoucher("3").getCentsValue());
 
+    }
+
+    @Test
+    void csvLoading() {
+        String spieler_file_path = "data/spieler.csv";
+        String gutschein_eingeloest_file_path = "data/gutschein_eingeloest.csv";
+        String gutschein_ausgegeben_file_path = "data/gutschein_ausgegeben.csv";
+
+        MemberList  member_list = new MemberList(spieler_file_path);
+        VoucherPool voucher_pool = new VoucherPool(gutschein_ausgegeben_file_path, gutschein_eingeloest_file_path, member_list);
+
+        assertEquals(4, voucher_pool.getRedeemedVouchers().size());
+        assertEquals(2, voucher_pool.getOpenVouchers().size());
+        assertEquals(6, voucher_pool.getAllVouchers().size());
+
+        // TODO: Test further by newly redeeming some vouchers etc
     }
 }
