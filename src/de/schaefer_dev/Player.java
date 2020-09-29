@@ -40,7 +40,7 @@ public class Player {
 
     /* used to display the content of this player in a readable fashion to the console */
     public void debug_print() {
-        System.out.print("Player " + firstname + " " + "  with Identifier " + identifier);
+        System.out.print("Player " + firstname + " " + lastname + "  with Identifier " + identifier);
         if (vouchers.size() > 0) {
             System.out.println(" owns the following Vouchers:");
             for (Voucher voucher: vouchers) {

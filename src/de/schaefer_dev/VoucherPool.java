@@ -18,24 +18,42 @@ public class VoucherPool {
     private LinkedList<Voucher> pendingVouchers;
     private LinkedList<Voucher> redeemedVouchers;
 
-    /* Create new voucher with the next available identifier. Voucher is assigned to the given player with the given value. */
+    /* Create new voucher with the next available identifier. Voucher is assigned to the given player with the given value.
+    * This method is overloaded. */
     public Voucher createVoucher(Integer value, Player belongs_to) {
         if (belongs_to == null) {
             throw new IllegalArgumentException("given Player reference is null.");
         }
 
-        Voucher new_voucher = createVoucherWithIdentifier(nextFreeId.toString(), value, belongs_to);
+        Voucher new_voucher = createVoucher(nextFreeId.toString(), value, belongs_to);
         nextFreeId += 1;
         return new_voucher;
     }
 
-    /* Create new voucher with given value for the given player. */
-    private Voucher createVoucherWithIdentifier(String identifier, Integer value, Player belongs_to) {
+    /* Create new voucher with given value for the given player.
+    * This method is overloaded. */
+    private Voucher createVoucher(String identifier, Integer value, Player belongs_to) {
         if (belongs_to == null) {
             throw new IllegalArgumentException("given Player reference is null.");
         }
 
         Voucher new_voucher = new Voucher(identifier, value, belongs_to);
+
+        // add voucher to player it belongs to and in global voucher list
+        pendingVouchers.add(new_voucher);
+        belongs_to.vouchers.add(new_voucher);
+
+        return new_voucher;
+    }
+
+    /* Create new fully custom voucher with given value and timestamp for the given player.
+    * This method is overloaded. */
+    private Voucher createVoucher(String identifier, Integer value, Player belongs_to, Boolean redeemed, String timestamp) {
+        if (belongs_to == null) {
+            throw new IllegalArgumentException("given Player reference is null.");
+        }
+
+        Voucher new_voucher = new Voucher(identifier, value, belongs_to, timestamp, redeemed);
 
         // add voucher to player it belongs to and in global voucher list
         pendingVouchers.add(new_voucher);
@@ -80,14 +98,12 @@ public class VoucherPool {
                 if (redeemed) {
                     /* Parse CSV file with redeemed Vouchers */
                     Player player = member_list.getPlayer(values[1]);
-                    Voucher new_voucher = createVoucherWithIdentifier(values[0], Integer.parseInt(values[2]), player);
+                    Voucher new_voucher = createVoucher(values[0], Integer.parseInt(values[2]), player, true, values[3]);
                     new_voucher.redeem();
-                    // TODO: date is missing and redeemed property is missing too
                 } else {
                     /* Parse CSV file with pending Vouchers */
                     Player player = member_list.getPlayer(values[2]);
-                    Voucher new_voucher = createVoucherWithIdentifier(values[0], Integer.parseInt(values[1].replace(".", "")), player);
-                    // TODO: date is missing
+                    Voucher new_voucher = createVoucher(values[0], Integer.parseInt(values[1].replace(".", "")), player, true, values[3]);
                 }
             }
 

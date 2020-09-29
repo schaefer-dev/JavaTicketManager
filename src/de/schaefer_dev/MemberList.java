@@ -11,13 +11,15 @@ public class MemberList {
     private Integer nextFreeId;
     private LinkedList<Player> members;
 
-    /* Create empty Memberlist */
+    /* Create empty Memberlist.
+    * This constructor is overloaded. */
     public MemberList() {
         nextFreeId = 0;
         members = new LinkedList<Player>();
     }
 
-    /* Create Memberlist from existing csv file */
+    /* Create Memberlist from existing csv file.
+    * This constructor is overloaded. */
     public MemberList(String members_csv_file_path) {
         nextFreeId = 0;
         members = new LinkedList<Player>();

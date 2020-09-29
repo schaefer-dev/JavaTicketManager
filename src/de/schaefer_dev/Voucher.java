@@ -10,18 +10,32 @@ public class Voucher {
     private final String identifier;
     private final Player belongsTo;
     private Boolean redeemed;
-    private Timestamp redeemedDate;
-    private final Timestamp createdDate;
+    private String redeemedDate;
+    private final String createdDate;
 
+    // Defines desired display-format for timestamps
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
+    /* Creates new voucher that has not been redeemed yet with the timestep of the current point in time
+    * This constructor is overloaded. */
     public Voucher(String voucher_identifier, Integer voucher_cents_value, Player voucher_belongs_to) {
         identifier = voucher_identifier;
         centsValue = voucher_cents_value;
         belongsTo = voucher_belongs_to;
         redeemed = false;
-        createdDate = new Timestamp(System.currentTimeMillis());
+        createdDate = sdf.format(new Timestamp(System.currentTimeMillis()));
         redeemedDate = null;
+    }
+
+    /* Creates new voucher of custom information.
+    * This constructor is overloaded. */
+    public Voucher(String voucher_identifier, Integer voucher_cents_value, Player voucher_belongs_to, String timestamp, Boolean already_redeemed) {
+        identifier = voucher_identifier;
+        centsValue = voucher_cents_value;
+        belongsTo = voucher_belongs_to;
+        redeemed = already_redeemed;
+        createdDate = timestamp;
+        redeemedDate = timestamp;
     }
 
     /* attempts to redeem this Voucher, returns true if successful, false on failure */
@@ -30,7 +44,7 @@ public class Voucher {
             return false;
         }
         redeemed = true;
-        redeemedDate = new Timestamp(System.currentTimeMillis());
+        redeemedDate = sdf.format(new Timestamp(System.currentTimeMillis()));
         return true;
     }
 
@@ -41,9 +55,9 @@ public class Voucher {
         Integer cents = centsValue % 100;
         System.out.print(" of value " + euros.toString() + "." + String.format("%02d", cents));
         System.out.print(" belonging to " + belongsTo.getFirstname() + " " + belongsTo.getLastname());
-        System.out.print(" was created at " + sdf.format(createdDate));
+        System.out.print(" was created at " + createdDate);
         if (redeemed) {
-            System.out.println(" and was redeemed on the " + sdf.format(redeemedDate));
+            System.out.println(" and was redeemed on the " + redeemedDate);
         } else {
             System.out.println(" and has not yet been redeemed.");
         }
@@ -65,11 +79,11 @@ public class Voucher {
         return redeemed;
     }
 
-    public Timestamp getRedeemedDate() {
+    public String getRedeemedDate() {
         return redeemedDate;
     }
 
-    public Timestamp getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 }
