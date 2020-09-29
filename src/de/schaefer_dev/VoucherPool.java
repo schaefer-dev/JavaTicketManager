@@ -1,5 +1,6 @@
 package de.schaefer_dev;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -23,7 +24,7 @@ public class VoucherPool {
             throw new IllegalArgumentException("given Player reference is null.");
         }
 
-        Voucher new_voucher = new Voucher(nextFreeId, value, belongs_to);
+        Voucher new_voucher = new Voucher(nextFreeId.toString(), value, belongs_to);
         nextFreeId += 1;
 
         // add voucher to player it belongs to and in global voucher list
@@ -37,6 +38,14 @@ public class VoucherPool {
         nextFreeId = 0;
         pendingVouchers = new LinkedList<Voucher>();
         redeemedVouchers = new LinkedList<Voucher>();
+    }
+
+    public VoucherPool(File pending_voucher_csv_file, File redeemed_voucher_csv_file) {
+        nextFreeId = 0;
+        pendingVouchers = new LinkedList<Voucher>();
+        redeemedVouchers = new LinkedList<Voucher>();
+
+        // TODO: parse files
     }
 
     // go through list of pending vouchers and archive all vouchers that have been redeemed since the last

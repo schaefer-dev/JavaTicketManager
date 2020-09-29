@@ -18,11 +18,11 @@ class MemberListTest {
 
         assertEquals("Max", test_player_1.getFirstname());
         assertEquals("Mustermann", test_player_1.getLastname());
-        assertEquals(0, test_player_1.getId());
+        assertEquals("0", test_player_1.getIdentifier());
 
         assertEquals("Bernd", test_player_2.getFirstname());
         assertEquals("Beispiel", test_player_2.getLastname());
-        assertEquals(1, test_player_2.getId());
+        assertEquals("1", test_player_2.getIdentifier());
 
     }
 }

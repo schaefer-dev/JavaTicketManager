@@ -4,18 +4,18 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class Voucher {
-    private final Integer value;
-    private final Integer id;
+    private final Integer centsValue;
+    private final String identifier;
     private final Player belongsTo;
     private Boolean redeemed;
     private Timestamp redeemedDate;
     private final Timestamp createdDate;
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
-    public Voucher(Integer voucher_id, Integer voucher_value, Player voucher_belongs_to) {
-        id = voucher_id;
-        value = voucher_value;
+    public Voucher(String voucher_identifier, Integer voucher_cents_value, Player voucher_belongs_to) {
+        identifier = voucher_identifier;
+        centsValue = voucher_cents_value;
         belongsTo = voucher_belongs_to;
         redeemed = false;
         createdDate = new Timestamp(System.currentTimeMillis());
@@ -34,7 +34,10 @@ public class Voucher {
 
     /* used to display the content of this voucher in a readable fashion to the console */
     public void debug_print() {
-        System.out.print("Voucher with id " + id.toString() + " of value " + value.toString());
+        System.out.print("Voucher with Identifier " + identifier);
+        Integer euros = centsValue / 100;
+        Integer cents = centsValue % 100;
+        System.out.print(" of value " + euros.toString() + "." + centsValue.toString());
         System.out.print(" belonging to " + belongsTo.getFirstname() + " " + belongsTo.getLastname());
         System.out.print(" was created at " + sdf.format(createdDate));
         if (redeemed) {
@@ -44,16 +47,16 @@ public class Voucher {
         }
     }
 
-    public Integer getValue() {
-        return value;
+    public Integer getCentsValue() {
+        return centsValue;
     }
 
     public Player getBelongsTo() {
         return belongsTo;
     }
 
-    public Integer getId() {
-        return id;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public Boolean getRedeemed() {

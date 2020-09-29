@@ -9,12 +9,12 @@ public class Player {
     private String firstname;
     private String lastname;
 
-    private final Integer id;
+    private final String identifier;
 
     LinkedList<Voucher> vouchers;
 
-    public Player(Integer player_id, String player_firstname, String player_lastname) {
-        id = player_id;
+    public Player(String player_identifier, String player_firstname, String player_lastname) {
+        identifier = player_identifier;
         firstname = player_firstname;
         lastname = player_lastname;
 
@@ -30,8 +30,8 @@ public class Player {
         return lastname;
     }
 
-    public Integer getId() {
-        return id;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public LinkedList<Voucher> getVouchers() {

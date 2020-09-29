@@ -20,10 +20,10 @@ class VoucherPoolTest {
         Voucher test_voucher_1 = vouchers.createVoucher(232,  test_player);
         Voucher test_voucher_2 = vouchers.createVoucher(999,  test_player);
 
-        assertEquals(232, test_voucher_1.getValue());
-        assertEquals(0, test_voucher_1.getId());
-        assertEquals(999, test_voucher_2.getValue());
-        assertEquals(1, test_voucher_2.getId());
+        assertEquals(232, test_voucher_1.getCentsValue());
+        assertEquals("0", test_voucher_1.getIdentifier());
+        assertEquals(999, test_voucher_2.getCentsValue());
+        assertEquals("1", test_voucher_2.getIdentifier());
 
     }
 
@@ -54,7 +54,7 @@ class VoucherPoolTest {
         assertEquals(1, pendingVouchers.size());
 
         // check that only voucher 2 remains
-        assertEquals(2, pendingVouchers.getFirst().getId());
+        assertEquals("2", pendingVouchers.getFirst().getIdentifier());
         test_voucher_2.redeem();
         pendingVouchers = vouchers.getPendingVouchers();
         assertEquals(0, pendingVouchers.size());
@@ -77,7 +77,7 @@ class VoucherPoolTest {
         test_voucher_3.redeem();
         redeemedVouchers = vouchers.getRedeemedVouchers();
         assertEquals(1, redeemedVouchers.size());
-        assertEquals(3, redeemedVouchers.getFirst().getId());
+        assertEquals("3", redeemedVouchers.getFirst().getIdentifier());
 
         test_voucher_1.redeem();
         redeemedVouchers = vouchers.getRedeemedVouchers();

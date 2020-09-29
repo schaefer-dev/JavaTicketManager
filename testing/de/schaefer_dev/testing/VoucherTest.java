@@ -16,11 +16,11 @@ class VoucherTest {
         Player test_player = memberList.createPlayer("Max", "Mustermann");
         Voucher test_voucher = vouchers.createVoucher(232,  test_player);
 
-        assertEquals(test_voucher.getRedeemed(), false);
+        assertFalse(test_voucher.getRedeemed());
         assertNull(test_voucher.getRedeemedDate());
         test_voucher.redeem();
 
-        assertEquals(test_voucher.getRedeemed(), true);
+        assertTrue(test_voucher.getRedeemed());
         assertNotNull(test_voucher.getRedeemedDate());
     }
 }
